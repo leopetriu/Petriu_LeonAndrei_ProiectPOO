@@ -149,7 +149,10 @@ float getLatimeTrunchi()
 //Functie Friend
 friend void CrestereMedieCopac(Copac cmCopac);
 friend int GetLatimeTrunchi(Copac copac);
-
+//Friend istream
+friend istream& operator>>(istream& iStream, Copac& copac);
+//Friend ostream
+friend ostream& operator<<(ostream& oStream, Copac copac);
 //Operator de atribuire
 Copac& operator=(const Copac& copac)
 {
@@ -190,7 +193,6 @@ float& operator[](int index)
     {
         return CrestereLuna[index];
     }
-
 }
 
 //Operator ()
@@ -396,6 +398,7 @@ friend ostream& operator<<(ostream& oStream, Trandafir tdf);
 //Friend pentru Operator >>
 friend istream& operator>>(istream& iStream, Trandafir& tdf);
 
+
 //Operator cast (explicit)
 explicit operator float()
 {
@@ -500,7 +503,7 @@ class Lavanda
 
     static void setEcosistem(string ecosistem)
     {
-        Lavanda::ecosistem;
+        Lavanda::ecosistem = ecosistem;
     }
 
     void setCuloare(string culoare)
@@ -546,6 +549,8 @@ class Lavanda
     }
 //Functie Friend
 friend void CrestereMedieLavanda(Lavanda cmlv);
+friend ostream& operator<<(ostream& output, Lavanda lv);
+friend istream& operator>>(istream& input, Lavanda& lv);
 //Operator!
 Lavanda operator! () {
     Lavanda copy = *this;
@@ -667,6 +672,69 @@ int GetLatimeTrunchi(Copac copac)
     return copac.getLatimeTrunchi();
 
 }
+istream& operator>>(istream& iStream, Copac& copac)
+{
+    cout<<"Inaltime: ";
+    iStream>>copac.inaltime;
+    cout<<endl<<"Latime Trunchi: ";
+    iStream>>copac.latimeTrunchi;
+    cout<<endl<<"Culoare: ";
+    iStream>>copac.culoare;
+    if(copac.CrestereLuna != NULL)
+    {
+        delete[]copac.CrestereLuna;
+    }
+    copac.CrestereLuna = new float[5];
+    for(int i = 0; i<5;i++)
+    {
+        cout<<endl<<"Crestere Luna "<<i+1<<": ";
+        iStream>>copac.CrestereLuna[i];
+    }
+    return iStream;
+}
+ostream& operator<<(ostream& oStream, Copac copac)
+{
+    oStream << "Inaltime: "<<copac.inaltime<<endl;
+    oStream << "Latime Trunchi: "<<copac.latimeTrunchi<<endl;
+    oStream << "Culoare: "<<copac.culoare<<endl;
+    for(int i = 0; i<5; i++)
+    {
+        oStream<<"Crestere in Luna "<<i+1<<": "<<copac.CrestereLuna[i]<<endl;
+    }
+    return oStream;
+}
+
+istream& operator>>(istream& input, Lavanda& lv)
+{
+    cout<<"Inaltime: ";
+    input>>lv.inaltime;
+    cout<<endl<<"Culoare: ";
+    input>>lv.culoare;
+    cout<<endl<<"Aroma? ";
+    input>>lv.aroma;
+    if(lv.CrestereLunaLavanda != NULL)
+    {
+        delete[]lv.CrestereLunaLavanda;
+    }
+    lv.CrestereLunaLavanda = new float[5];
+    for(int i = 0; i<5; i++)
+    {
+    cout<<endl<<"Crestere Luna "<<i+1<<": ";
+   input>>lv.CrestereLunaLavanda[i];
+    }
+    return input;
+}
+ostream& operator<<(ostream& output, Lavanda lv)
+{
+    output << "Inaltime: "<<lv.inaltime<<endl;
+    output << "Culoare: "<<lv.culoare<<endl;
+    output <<"Aroma (1-True/0-Fals): "<<lv.aroma<<endl;
+    for(int i = 0; i<5; i++)
+    {
+        output<<"Crestere in Luna "<<i+1<<": "<<lv.CrestereLunaLavanda[i]<<endl;
+    }
+    return output;
+}
 string Copac::ecosistem = "Mediterranean";
 string Trandafir::ecosistem = "Mediterranean";
 string Lavanda::ecosistem = "Mediterranean";
@@ -717,6 +785,35 @@ cout<<"Folosim operatorul() si aflam cu ce medie a crescut Copac 4 intre luna 1 
 cout << endl;
 cout<<"Latime Trunchi folosind functie friend: "<<GetLatimeTrunchi(copac4)<<endl;
 
+
+
+
+Copac *v_copac = new Copac[4];
+for(int i = 0; i<4; i++)
+{
+    cout <<endl<< "Introduceti informatii pentru Copac "<<i+1<<": "<<endl;
+    cin>>v_copac[i];
+}
+
+for(int i = 0; i<4; i++)
+{
+    cout<<endl<<"Copac "<<i+1<<": "<<endl<<v_copac[i];
+}
+
+Copac** m_copac = new Copac* [4];
+for(int i = 0; i<4; i++)
+{
+    m_copac[i] = new Copac();
+    cout << "Introduceti informatii pentru Copac " << i + 1 << ": ";
+    cin >> *m_copac[i];
+}
+
+for(int i = 0; i<4; i++)
+{
+    cout<<endl<<"Copac "<<i+1<<": "<<endl;
+    cout<<*m_copac[i];
+}
+
 //Trandafir - initializare
 cout<<"TRANDAFIR:"<<endl;
 float* CrestereLunaTrandafir = new float[12];
@@ -743,7 +840,7 @@ CrestereMedieTrandafir(tdf4);
 cout<<"Rup o Petala"<<endl;
 RupePetalele(tdf4);
 
-cout<<"Folosing Operatorul++, incrementam postfixata nr the petale"<<endl;
+cout<<"Folosing Operatorul++, incrementam postfixata nr de petale"<<endl;
 Trandafir tdf5;
 tdf5.setNrPet(1);
 ++tdf5;
@@ -751,8 +848,20 @@ cout<<tdf5.getNrPet()<<endl;
 Trandafir tdf6;
 cout << "Cream Trandafir 6 si folosim operatorul >>"<<endl;
 cin >> tdf6;
-cout<<"Afisam valorile lui Trandafir 6 folosind operatorul" <<endl;
+cout<<"Afisam valorile lui Trandafir 6 folosind operatorul<<" <<endl;
 cout << tdf6;
+
+Trandafir *v_tdf = new Trandafir[4];
+for(int i = 0; i<4; i++)
+{
+    cout <<endl<< "Introduceti informatii pentru Trandafir "<<i+1<<": "<<endl;
+    cin>>v_tdf[i];
+}
+
+for(int i = 0; i<4; i++)
+{
+    cout<<endl<<"Trandafir "<<i+1<<": "<<endl<<v_tdf[i];
+}
 
 float inaltimeExplicit = (float)tdf6;
 cout <<endl<<"Valoare varabiliei 'Inaltime' devine de tip 'float': "<<tdf6.getInaltime()<<endl;
@@ -784,11 +893,34 @@ cout<<"Diferenta de crestere intre luna 3 si 1: "<<lv3(1,3)<<endl;
 Lavanda lv4 = lv3 * 2;
 cout<<"Inmultim inaltime lui Lavanda 3 cu 2: "<<lv4.getInaltime();
 Lavanda lv5;
-cout << "Folosind operatorul->, Setam pointerul atributului 'inaltime' lui Lavanda 5 ca '1500' si afisam pointerul"<<endl;
+cout <<endl<< "Folosind operatorul->, Setam pointerul atributului 'inaltime' lui Lavanda 5 ca '1500' si afisam pointerul"<<endl;
 lv5.setInaltime(1);
 cout << lv5.getInaltime()<<endl;
 cout << lv5->getInaltime()<<endl;
 
+Lavanda *v_lv = new Lavanda[4];
+for(int i = 0; i<4; i++)
+{
+    cout <<endl<< "Introduceti informatii pentru Lavanda "<<i+1<<": "<<endl;
+    cin>>v_lv[i];
+}
 
+for(int i = 0; i<4; i++)
+{
+    cout<<endl<<"Lavanda "<<i+1<<": "<<endl<<v_lv[i];
+}
+
+delete[]CrestereLunaCopac;
+delete[]CrestereLunaLavanda;
+delete[]CrestereLunaTrandafir;
+delete[]v_copac;
+delete[]v_lv;
+delete[]v_tdf;
+
+for(int i = 0;i<4;i++)
+{
+    delete[]m_copac;
+}
+delete[]m_copac;
 
 }
