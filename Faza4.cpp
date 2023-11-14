@@ -800,18 +800,19 @@ for(int i = 0; i<4; i++)
     cout<<endl<<"Copac "<<i+1<<": "<<endl<<v_copac[i];
 }
 
-Copac** m_copac = new Copac* [4];
-for(int i = 0; i<4; i++)
+Copac** m_copac = new Copac*[2];
+    for (int i = 0; i < 3; i++) 
+    {
+        m_copac[i] = new Copac[2];
+    }
+for(int i = 0; i<2; i++)
+for(int j = 0; j<2; j++)
+cin>>m_copac[i][j];
+for(int i = 0; i<2;i++)
+for(int j = 0; j<2;j++)
 {
-    m_copac[i] = new Copac();
-    cout << "Introduceti informatii pentru Copac " << i + 1 << ": ";
-    cin >> *m_copac[i];
-}
-
-for(int i = 0; i<4; i++)
-{
-    cout<<endl<<"Copac "<<i+1<<": "<<endl;
-    cout<<*m_copac[i];
+    cout<<endl<<"Copac["<<i+1<<"]"<<"["<<j+1<<"] : ";
+    cout<<m_copac[i][j];
 }
 
 //Trandafir - initializare
@@ -917,10 +918,12 @@ delete[]v_copac;
 delete[]v_lv;
 delete[]v_tdf;
 
-for(int i = 0;i<4;i++)
+for(int i = 0;i<2;i++)
 {
-    delete[]m_copac;
+    delete[]m_copac[i];
 }
 delete[]m_copac;
 
 }
+
+
