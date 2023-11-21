@@ -735,12 +735,128 @@ ostream& operator<<(ostream& output, Lavanda lv)
     }
     return output;
 }
+
+class ingrizirePlante
+{
+private:
+    Trandafir* trandafir;
+    int inaltime;
+    const int Observare;
+    static int nrSaptamana;
+    float cantitateApa;
+    bool plouat;
+
+public: 
+
+    Trandafir* gettrandafir()
+    {
+        return trandafir;
+    }
+
+    void settrandafir(Trandafir* trandafir)
+    {
+        this->trandafir = trandafir;
+    }
+    int getinaltime()
+    {
+        return inaltime;
+    }
+
+    void setinaltime(int inaltime)
+    {
+        this->inaltime = inaltime;
+    }
+
+    int getObservare()
+    {
+        return Observare;
+    }
+
+   float getcantitateApa()
+   {
+        return cantitateApa;
+   }
+
+   void setcantitateApa(float cantitateApa)
+   {
+        this->cantitateApa = cantitateApa;
+   }
+
+   bool getplouat()
+   {
+    return plouat;
+   }
+
+   void setplouat()
+   {
+    this->plouat = plouat;
+   }
+
+    ingrizirePlante() : Observare(++nrSaptamana)
+    {
+        this->trandafir = NULL;
+        this->plouat = false;
+        this->cantitateApa = 0;
+        this->inaltime = 0;
+    }
+
+    ingrizirePlante(Trandafir* trandafir, float cantitateApa, bool plouat, int inaltime):Observare(++nrSaptamana)
+    {
+        this->trandafir = trandafir;
+        this->cantitateApa = cantitateApa;
+        this->inaltime = inaltime;
+        this->plouat = plouat;
+    }
+
+    ingrizirePlante& operator=(const ingrizirePlante& ip) 
+    {
+        trandafir = ip.trandafir;
+        cantitateApa = ip.cantitateApa;
+        plouat = ip.plouat;
+        inaltime = ip.inaltime;
+        return *this;
+    }
+
+    ingrizirePlante operator()()
+    { 
+        if(!this->plouat)
+          this->cantitateApa += 10; 
+        return *this;
+    }
+
+    ingrizirePlante operator++()
+    {
+        ++this->inaltime;
+        return *this;
+    }
+
+void afisare()
+{
+    cout<<"In observarea din Saptamana: "<<Observare<<endl;
+    if(trandafir != nullptr)
+    {
+        cout<<"Planta Observata: Trandafir"<<endl;
+    }
+    else
+    {
+        cout<<"Planta Observata: - "<<endl;
+    }
+    cout<<"Inaltime: "<<inaltime<<endl;
+    cout<<"Vreme: "<<(plouat ? "ploaie":"Fara ploaie")<<endl;
+    cout<<"Cantitate de apa pentru hidratare: "<<cantitateApa<<" L"<<endl;
+
+}
+
+};
+
 string Copac::ecosistem = "Mediterranean";
 string Trandafir::ecosistem = "Mediterranean";
 string Lavanda::ecosistem = "Mediterranean";
+int ingrizirePlante::nrSaptamana = 0;
 
 int main()
 {
+    /*
 //COPAC
 cout<<"COPAC:"<<endl;
 //Initializam Crestere Lunara
@@ -814,7 +930,7 @@ for(int j = 0; j<2;j++)
     cout<<endl<<"Copac["<<i+1<<"]"<<"["<<j+1<<"] : ";
     cout<<m_copac[i][j];
 }
-
+*/
 //Trandafir - initializare
 cout<<"TRANDAFIR:"<<endl;
 float* CrestereLunaTrandafir = new float[12];
@@ -878,7 +994,7 @@ CrestereLunaLavanda[4] = 0.10;
 Lavanda lv1;
 Lavanda lv3(3,3,"violet", CrestereLunaLavanda,true);
 Lavanda lv2(3);
-
+/*
 //Afisare
 cout<<"Lavanda 1: Creat fara parametru: Valoare NULL"<<endl;
 lv1.afisare();
@@ -923,6 +1039,28 @@ for(int i = 0;i<2;i++)
     delete[]m_copac[i];
 }
 delete[]m_copac;
+
+*/
+
+ingrizirePlante ip1;
+ingrizirePlante ip2(&tdf6, 10, false, tdf6.getInaltime());
+
+ingrizirePlante ip3 = ip2;
+
+cout<<"Observam plantele in prima saptamana si afisam: "<<endl;
+ip1.afisare();
+cout<<endl<<endl<<"Observam plantele din saptamana "<<ip2.getObservare()<<" (Trandafirul 6)"<<endl;
+ip2.afisare();
+cout<<endl<<endl<<"Folosind operatorul (), verificam daca a plouat. Daca nu a plouat, administram inca 10L de apa"<<endl;
+ip2();
+cout<<"Observam plantele din saptamana "<<ip2.getObservare()<<" (am apelat operatorul () deci cantitatea de apa va fi 0)";
+cout<<endl;
+ip2.afisare();
+cout<<endl<<endl<<"Observam plantele din saptamana "<<ip3.getObservare()<<" (am folosit operatorul de atribuire deci va fi = cu sapt 2)"<<endl;
+ip3.afisare();
+++ip3;
+cout<<endl<<endl<<"Observam plantele din saptamana "<<ip3.getObservare()<<" (am folosit operatorul ++ prefix. sa incrementam inaltimea)"<<endl;
+ip3.afisare();
 
 }
 
